@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Egg Timer</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #fffbea;
+      color: #333;
+      text-align: center;
+      padding: 50px;
+    }
+
+    h1 {
+      font-size: 2rem;
+      color: #a0522d;
+    }
+
+    button {
+      background: #ffebcd;
+      border: 2px solid #deb887;
+      color: #5c4033;
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 1rem;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #f5deb3;
+    }
+
+    #countdown {
+      margin-top: 30px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #8b4513;
+    }
+
+    .sparkle {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: gold;
+      border-radius: 50%;
+      animation: sparkle 1s linear forwards;
+      pointer-events: none;
+    }
+
+    @keyframes sparkle {
+      0% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+      100% {
+        opacity: 0;
+        transform: scale(0.5) translateY(-100px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Boil the perfect egg! 🥚⏱️</h1>
+  <div>
+    <button onclick="startTimer(0.5)">Soft Boiled 30 secs</button>
+    <button onclick="startTimer(1)">Medium Boiled 1 min</button>
+    <button onclick="startTimer(3)">Hard Boiled 3 mins</button>
+  </div>
+  <div>
+    <p id="countdown">Pick a timer above</p>
+    <img id="eggImage" src="" alt="Egg" style="max-width: 200px; margin-top: 20px; display: none;" />
+    <audio id="dingSound" src="ding.mp3" preload="auto"></audio>
+  </div>
+
+  <script>
+    let countdownInterval;
+
+    function startTimer(minutes) {
+      clearInterval(countdownInterval);
+      let timeLeft = Math.floor(minutes * 60);
+
+      const eggImg = document.getElementById("eggImage");
+      eggImg.style.display = "block";
+
+      if (minutes === 0.5) {
+        eggImg.src = "soft.png";
+      } else if (minutes === 1) {
+        eggImg.src = "medium.png";
+      } else if (minutes === 3) {
+        eggImg.src = "hard.png";
+      }
+
+      updateCountdown(timeLeft);
+
+      countdownInterval = setInterval(() => {
+        if (timeLeft <= 0) {
+          clearInterval(countdownInterval);
+          document.getElementById("countdown").textContent = "Your egg is ready! 🍽️🥚";
+          document.getElementById("dingSound").play();
+          showSparkles();
+        } else {
+          updateCountdown(timeLeft);
+          timeLeft--;
+        }
+      }, 1000);
+    }
+
+    function updateCountdown(timeLeft) {
+      let mins = Math.floor(timeLeft / 60);
+      let secs = timeLeft % 60;
+      if (secs < 10) secs = '0' + secs;
+      document.getElementById("countdown").textContent = `Time Left: ${mins}:${secs}`;
+    }
+
+    function showSparkles() {
+      for (let i = 0; i < 30; i++) {
+        const sparkle = document.createElement('div');
+        sparkle.className = 'sparkle';
+        sparkle.style.left = Math.random() * window.innerWidth + 'px';
+        sparkle.style.top = Math.random() * window.innerHeight + 'px';
+        document.body.appendChild(sparkle);
+
+        setTimeout(() => {
+          sparkle.remove();
+        }, 1000);
+      }
+    }
+  </script>
+</body>
+</html>
